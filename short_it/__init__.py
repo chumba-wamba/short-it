@@ -5,7 +5,7 @@ from flask_mongoengine import MongoEngine
 app = Flask(__name__)
 app.config["MONGODB_SETTINGS"] = {
     'db': 'shortit',
-    'host': 'mongodb://localhost/shorit'
+    'host': 'mongodb://localhost/shortit'
 }
 db = MongoEngine(app)
 

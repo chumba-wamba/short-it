@@ -1,10 +1,18 @@
 from flask import render_template, url_for, jsonify, redirect
 from short_it import app
+from short_it.models import URL, User
 
 
-@app.route("/")
-@app.route("/index")
-@app.route("/home")
+@app.route("/", methods=["GET"])
+@app.route("/index", methods=["GET"])
+@app.route("/home", methods=["GET"])
+def index():
+    return "Hello, world!\n"
+
+
+@app.route("/", methods=["POST"])
+@app.route("/index", methods=["POST"])
+@app.route("/home", methods=["POST"])
 def index():
     return "Hello, world!\n"
 
