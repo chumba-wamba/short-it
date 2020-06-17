@@ -10,13 +10,6 @@ def index():
     return "Hello, world!\n"
 
 
-@app.route("/", methods=["POST"])
-@app.route("/index", methods=["POST"])
-@app.route("/home", methods=["POST"])
-def index():
-    return "Hello, world!\n"
-
-
 @app.route("/<string:url_id>")
 def shortened(url_id):
     return url_id
