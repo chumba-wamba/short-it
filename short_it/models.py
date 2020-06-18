@@ -11,7 +11,9 @@ class URL(db.Document):
 
 
 class User(db.Document):
-    user_name = db.StringField(unique=True, required=True)
-    email = db.EmailField(unique=True, required=True)
     first_name = db.StringField(required=True)
     last_name = db.StringField(required=False)
+    user_name = db.StringField(unique=True, required=True)
+    email = db.EmailField(unique=True, required=True)
+    password = db.StringField(required=True)
+    url_list = db.ListField(URL())

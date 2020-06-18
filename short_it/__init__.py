@@ -1,5 +1,7 @@
 from flask import Flask
+from flask_bcrypt import Bcrypt
 from flask_mongoengine import MongoEngine
+from flask_login import LoginManager
 
 
 app = Flask(__name__)
@@ -8,6 +10,7 @@ app.config["MONGODB_SETTINGS"] = {
     'host': 'mongodb://localhost/shortit'
 }
 db = MongoEngine(app)
+bcrypt = Bcrypt(app)
 
 
 from short_it import routes
