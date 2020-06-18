@@ -1,7 +1,10 @@
-from short_it import db
-from short_it.models import URL, User
-from json import loads, dumps
+import sys
+sys.path.insert(0, 'E:\Projects\Short-It')
+
 from datetime import datetime
+from json import loads, dumps
+from short_it.models import URL, User
+from short_it import db
 
 
 url_test = URL.objects(shortened="test1")

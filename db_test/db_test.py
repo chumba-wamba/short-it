@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, 'E:\Projects\Short-It')
+
 from short_it import db
 from short_it.models import URL, User
 from datetime import datetime
