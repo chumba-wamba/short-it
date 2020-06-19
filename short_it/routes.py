@@ -17,11 +17,11 @@ def shorten():
     form = ShortenForm()
 
     if request.method == "POST" and form.validate_on_submit():
-        shortened_url = form.shortened_url.data
         if not form.shortened_url.data:
             shortened_url = random_url_gen()
+        else:
+            shortened_url = form.shortened_url.data
 
-        print(form.original_url, shortened_url)
         new_shortened_url = URL(
             original_url=form.original_url.data,
             shortened_url=shortened_url,
