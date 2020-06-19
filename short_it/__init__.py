@@ -9,6 +9,7 @@ app.config["MONGODB_SETTINGS"] = {
     'db': 'shortit',
     'host': 'mongodb://localhost/shortit'
 }
+app.config['SECRET_KEY'] = "SECRET_KEY"
 db = MongoEngine(app)
 bcrypt = Bcrypt(app)
 
