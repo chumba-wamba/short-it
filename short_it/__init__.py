@@ -12,6 +12,6 @@ app.config["MONGODB_SETTINGS"] = {
 app.config['SECRET_KEY'] = "SECRET_KEY"
 db = MongoEngine(app)
 bcrypt = Bcrypt(app)
-
+login_manager = LoginManager(app)
 
 from short_it import routes

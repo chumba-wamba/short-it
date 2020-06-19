@@ -2,6 +2,7 @@ from flask import render_template, url_for, jsonify, redirect, request, flash
 from short_it import app, db, bcrypt
 from short_it.models import URL, User
 from short_it.forms import LoginForm, RegistrationForm, ShortenForm
+from short_it.shortener import random_url_gen
 
 
 @app.route("/", methods=["GET"])
@@ -16,14 +17,29 @@ def shorten():
     form = ShortenForm()
 
     if request.method == "POST" and form.validate_on_submit():
-        pass
+        shortened_url = form.shortened_url.data
+        if not form.shortened_url.data:
+            shortened_url = random_url_gen()
 
+        print(form.original_url, shortened_url)
+        new_shortened_url = URL(
+            original_url=form.original_url.data,
+            shortened_url=shortened_url,
+        )
+        new_shortened_url.save()
+        flash("localhost:5000/"+str(shortened_url), "primary")
     return render_template("shorten.html", title="Short-It", form=form)
 
 
 @app.route("/<string:url_id>")
 def shortened(url_id):
-    return url_id
+    objects = URL.objects(shortened_url=url_id)
+    if len(objects) == 1:
+        original_url = objects[0].original_url
+        return redirect(original_url)
+
+    flash("The URL does not exist", "danger")
+    return redirect(url_for("index"))
 
 
 @app.route("/dashboard/<string:url_id>")
@@ -61,6 +77,8 @@ def register():
             password=hashed_password,
         )
         new_user.save()
+
+        flash(f"Welcome, {form.user_name.data}!", "success")
         return redirect(url_for("index"))
 
     return render_template("register.html", title="Register", form=form)

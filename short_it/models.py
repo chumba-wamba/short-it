@@ -3,8 +3,8 @@ from short_it import db
 
 
 class URL(db.Document):
-    shortened = db.StringField(unique=True, required=True)
-    URL = db.StringField(required=True)
+    original_url = db.StringField(required=True)
+    shortened_url = db.StringField(unique=True, required=True)
     date_defined = db.DateTimeField(default=datetime.utcnow)
     counter = db.IntField(default=0)
     date_array = db.ListField(db.DateTimeField())

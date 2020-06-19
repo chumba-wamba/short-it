@@ -45,6 +45,7 @@ class ShortenForm(FlaskForm):
     shorten = SubmitField(label="Short It!")
 
     def validate_shortened_url(self, shortened_url):
-        object_list = User.objects(shortened_url=shortened_url.data)
-        if len(object_list) > 0:
-            raise ValidationError("The shortened url is already taken.")
+        if shortened_url.data:
+            object_list = URL.objects(shortened_url=shortened_url.data)
+            if len(object_list) > 0:
+                raise ValidationError("The shortened url is already taken.")
