@@ -29,6 +29,13 @@ def shorten():
             shortened_url=shortened_url,
         )
         new_shortened_url.save()
+
+        if current_user.is_authenticated:
+            print("here")
+            user = User.objects(id=current_user.id).first()
+            user.update(push__url_list=URL.objects(
+                shortened_url=shortened_url).first().id)
+
         flash("localhost:5000/"+str(shortened_url), "primary")
     return render_template("shorten.html", title="Short-It", form=form)
 
@@ -55,7 +62,6 @@ def dashboard():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    print(current_user.is_authenticated)
     if current_user.is_authenticated:
         return redirect(url_for("index"))
 
@@ -92,7 +98,8 @@ def register():
         )
         new_user.save()
 
-        flash(f"Welcome, {form.user_name.data}!", "success")
+        flash(
+            f"Welcome, {form.user_name.data}! You have been successfully registered as a user of Short It :)", "success")
         return redirect(url_for("index"))
 
     return render_template("register.html", title="Register", form=form)
