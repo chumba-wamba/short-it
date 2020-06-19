@@ -6,6 +6,6 @@ To do:
 
 * Draw sequence, architecture, and/or use-case diagrams. 
 * Code the models for MongoDB in MongoEngine. ✔
-* Code the routing logic to interact with the database. 
+* Code the routing logic to interact with the database. ✔
 * Design and code the front-end (probably requires AJAX). ✔
 * Add logic to integrate dashboard for registered users.
