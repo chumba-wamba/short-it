@@ -1,5 +1,5 @@
 from flask import render_template, url_for, jsonify, redirect, request, flash
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
 from short_it import app, db, bcrypt
 from short_it.models import URL, User
@@ -48,6 +48,7 @@ def shortened(url_id):
 
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
     return render_template("dashboard.html")
 
@@ -64,6 +65,10 @@ def login():
         if len(user) == 1 and bcrypt.check_password_hash(user.first().password, form.password.data):
             login_user(user=user.first())
             flash("You were successfully logged in!", "success")
+
+            if request.args.get('next'):
+                return redirect(request.args.get('next'))
+
             return redirect(url_for("index"))
         flash("Login unsuccessful", "danger")
 
