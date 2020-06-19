@@ -1,4 +1,6 @@
 from flask import render_template, url_for, jsonify, redirect, request, flash
+from flask_login import current_user, login_user, logout_user
+from datetime import datetime
 from short_it import app, db, bcrypt
 from short_it.models import URL, User
 from short_it.forms import LoginForm, RegistrationForm, ShortenForm
@@ -35,25 +37,32 @@ def shorten():
 def shortened(url_id):
     objects = URL.objects(shortened_url=url_id)
     if len(objects) == 1:
-        original_url = objects[0].original_url
+        url_object = objects[0]
+        url_object.update(inc__counter=1)
+        url_object.update(push__date_array=datetime.utcnow)
+        original_url = url_object.original_url
         return redirect(original_url)
 
     flash("The URL does not exist", "danger")
     return redirect(url_for("index"))
 
 
-@app.route("/dashboard/<string:url_id>")
-def dashboard(url_id):
-    return url_id
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    form = LoginForm()
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
 
+    form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
-        login_user = User.objects(user_name=form.user_name.data)
-        if len(login_user) == 1 and bcrypt.check_password_hash(login_user[0].password, form.password.data):
+        user = User.objects(user_name=form.user_name.data)
+        if len(user) == 1 and bcrypt.check_password_hash(user.first().password, form.password.data):
+            login_user(user=user.first())
             flash("You were successfully logged in!", "success")
             return redirect(url_for("index"))
         flash("Login unsuccessful", "danger")
@@ -82,3 +91,10 @@ def register():
         return redirect(url_for("index"))
 
     return render_template("register.html", title="Register", form=form)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    flash("You were successfully logged out!", "success")
+    return redirect(url_for("index"))

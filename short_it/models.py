@@ -1,5 +1,11 @@
+from flask_login import UserMixin
 from datetime import datetime
-from short_it import db
+from short_it import db, login_manager
+
+
+@login_manager.user_loader
+def load_user(id):
+    return User.objects(id=id).first()
 
 
 class URL(db.Document):
@@ -10,7 +16,7 @@ class URL(db.Document):
     date_array = db.ListField(db.DateTimeField())
 
 
-class User(db.Document):
+class User(UserMixin, db.Document):
     first_name = db.StringField(required=True)
     last_name = db.StringField(required=False)
     user_name = db.StringField(unique=True, required=True)

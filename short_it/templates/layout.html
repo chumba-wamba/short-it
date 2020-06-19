@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width=720, maximum-scale=1.0" />
     <title>{{ title }}</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -22,17 +22,30 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-2 mr-md-auto ml-md-4">
+                {% if not current_user.is_authenticated %}
                 <li class="nav-item {% if request.path=='/home' %} active {% endif %}"><a class="nav-link"
                         href={{ url_for('index') }}>Home</a></li>
+                {% else %}
+                <li class="nav-item {% if request.path=='/dashboard' %} active {% endif %}"><a class="nav-link"
+                        href={{ url_for('dashboard') }}>Dashboard</a></li>
+                {% endif %}
                 <li class="nav-item {% if request.path=='/shorten' %} active {% endif %}"><a class="nav-link"
                         href="{{ url_for('shorten') }}">Shorten</a></li>
             </ul>
+
+            {% if not current_user.is_authenticated %}
             <ul class="navbar-nav ml-2 ml-md-auto mr-md-4">
                 <li class="nav-item {% if request.path=='/login' %} active {% endif %}"><a class="nav-link"
                         href={{ url_for('login') }}>Login</a></li>
                 <li class="nav-item {% if request.path=='/register' %} active {% endif %}"><a class="nav-link"
                         href={{ url_for('register') }}>Register</a></li>
             </ul>
+            {% else %}
+            <ul class="navbar-nav ml-2 ml-md-auto mr-md-4">
+                <li class="nav-item {% if request.path=='/logout' %} active {% endif %}"><a class="nav-link"
+                        href={{ url_for('logout') }}>Logout</a></li>
+            </ul>
+            {% endif %}
         </div>
     </nav>
 
