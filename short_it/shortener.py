@@ -3,6 +3,10 @@ import json
 from short_it.models import URL
 
 
+# Random URL Generator where it acquires three
+# random words from the api hosted at the link
+# below, and concatenates them with a hyphen ("-")
+# and returns this string
 def random_url_gen():
     random_url_flag = False
     url = "https://random-word-api.herokuapp.com/word?number=3"
