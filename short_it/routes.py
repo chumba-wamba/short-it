@@ -45,27 +45,27 @@ def shorten():
         else:
             shortened_url = form.shortened_url.data
 
+        # Since any individual can shorten any link they
+        # want, but only registered users can access
+        # information such as user hits, user locations, etc.
+        # relevant to the shortened URLs, this block of code
+        # checks whether a session has a user logged in or not
+        # If a user is logged in, then the ID of the User object
+        # is stored in a field of the document belonging to the
+        # shortened URL that is going to be generated
+        owner = None
+        if current_user.is_authenticated:
+            owner = current_user.id
+
         # Creating an URL object to store the
         # original url data (recieved from the WTForm)
         # along with the shortened url data
         new_shortened_url = URL(
             original_url=form.original_url.data,
             shortened_url=shortened_url,
+            owner=owner
         )
         new_shortened_url.save()  # Adding the URL object to the database
-
-        # Since any individual can shorten any link they
-        # want, but only registered users can access
-        # information such as user hits, user locations, etc.
-        # relevant to the shortened URLs, this block of code
-        # checks whether a session has a user logged in or not
-        # If a user is logged in, then the ID of the URL object
-        # is stored in a field of the document belonging to the
-        # current user
-        if current_user.is_authenticated:
-            user = User.objects(id=current_user.id).first()
-            user.update(push__url_list=URL.objects(
-                shortened_url=shortened_url).first().id)
 
         flash("localhost:5000/"+str(shortened_url), "primary")
     return render_template("shorten.html", title="Short-It", form=form)
@@ -105,7 +105,13 @@ def dashboard():
     # TODO: Acquire information for all the
     # links belonging to the end user and display
     # these stats
-    return render_template("dashboard.html")
+    if current_user.is_authenticated:
+        # user = User.objects(id=current_user.id).first()
+        # url_list = user.url_list
+        # url_list = [(URL.objects(id=item).first(
+        # ).date_defined).strftime('%m/%d/%Y, %H:%M:%S') for item in url_list]
+        url_list = URL.objects(owner=current_user.id)
+    return render_template("dashboard.html", title="Dashboard", url_list=url_list)
 
 
 # Rotue to access the login page
@@ -166,6 +172,13 @@ def register():
 
     return render_template("register.html", title="Register", form=form)
 
+
+# Route to access and update the account
+# details of the user
+@app.route("/account")
+@login_required
+def account():
+    return render_template("account.html", title="Account")
 
 # Rotue to logout the user and delete
 # the session

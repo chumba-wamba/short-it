@@ -14,6 +14,10 @@ class URL(db.Document):
     date_defined = db.DateTimeField(default=datetime.utcnow)
     counter = db.IntField(default=0)
     date_array = db.ListField(db.DateTimeField())
+    owner = db.ObjectIdField(default=None)
+
+    def __repr__(self):
+        return f"original url: {self.original_url}, shortened url: {self.shortened_url}, owner: {self.owner}"
 
 
 class User(UserMixin, db.Document):
@@ -22,4 +26,7 @@ class User(UserMixin, db.Document):
     user_name = db.StringField(unique=True, required=True)
     email = db.EmailField(unique=True, required=True)
     password = db.StringField(required=True)
-    url_list = db.ListField()
+    shared_url_list = db.ListField()
+
+    def __repr__(self):
+        return f"user_name: {self.user_name}, url_list: {self.url_list}"
