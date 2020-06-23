@@ -8,4 +8,4 @@ To do:
 * Code the models for MongoDB in MongoEngine. ✔
 * Code the routing logic to interact with the database. ✔
 * Design and code the front-end (probably requires AJAX). ✔
-* Add logic to integrate dashboard for registered users.
+* Add logic to integrate dashboard for registered users. ✔
