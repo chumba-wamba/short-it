@@ -1,6 +1,40 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1>Dashboard</h1>
-    <h5>{{ url_list }}</h5>
+<h1>Dashboard</h1>
+{% for url in url_list %}
+
+<div class="card my-4">
+    <div class="card-body">
+        <h5 class="card-text px-3">Orginal URL: {{ url.original_url }} </h5>
+        <h5 class="card-text px-3">Shortened URL: {{ url.shortened_url }} </h5>
+        <h5 class="card-text px-3">Click Count: {{ url.counter }} </h5>
+        <h5 class="card-text px-3">Date Defined: {{ url.date_defined.strftime('%m/%d/%Y') }}</h5>
+
+        <form method="POST" action={{url_for('share', url_id=url.id)}}>
+            {{ form.hidden_tag() }}
+            <div class="col-md-6 mt-4">
+                <div class="form-group">
+                    {{ form.user_name.label(class="form-control-label") }}
+                    {% if form.user_name.errors %}
+                    {{ form.user_name(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.user_name.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.user_name(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form.share(class="btn btn-outline-info") }}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endfor %}
 {% endblock content %}

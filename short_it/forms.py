@@ -49,3 +49,9 @@ class ShortenForm(FlaskForm):
             object_list = URL.objects(shortened_url=shortened_url.data)
             if len(object_list) > 0:
                 raise ValidationError("The shortened url is already taken.")
+
+
+class ShareForm(FlaskForm):
+    user_name = StringField("Username", validators=[
+                            DataRequired(), Length(min=6, max=20)])
+    share = SubmitField("Share")

@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
 from short_it import app, db, bcrypt
 from short_it.models import URL, User
-from short_it.forms import LoginForm, RegistrationForm, ShortenForm
+from short_it.forms import LoginForm, RegistrationForm, ShortenForm, ShareForm
 from short_it.shortener import random_url_gen
 
 
@@ -99,19 +99,44 @@ def shortened(url_id):
 # stores all the information pertaining
 # to shortened URLs
 # Is only accessible by registered users
-@app.route("/dashboard")
+@app.route("/dashboard", methods=["GET", "POST"])
 @login_required
 def dashboard():
     # TODO: Acquire information for all the
     # links belonging to the end user and display
     # these stats
+
     if current_user.is_authenticated:
-        # user = User.objects(id=current_user.id).first()
-        # url_list = user.url_list
-        # url_list = [(URL.objects(id=item).first(
-        # ).date_defined).strftime('%m/%d/%Y, %H:%M:%S') for item in url_list]
+        form = ShareForm()
         url_list = URL.objects(owner=current_user.id)
-    return render_template("dashboard.html", title="Dashboard", url_list=url_list)
+
+    return render_template("dashboard.html", title="Dashboard", form=form, url_list=url_list)
+
+
+@app.route("/share/<string:url_id>", methods=["GET", "POST"])
+@login_required
+def share(url_id):
+    form = ShareForm()
+    if request.method == "POST" and form.validate_on_submit():
+        object_list = User.objects(user_name=form.user_name.data)
+        if len(object_list) == 0:
+            flash("The user name does not exist.", "danger")
+            return redirect(url_for("dashboard"))
+
+        if len(object_list) == 1 and object_list[0].user_name == User.objects(id=current_user.id).first().user_name:
+            flash("Enter a username that is not the same as yours :P", "danger")
+            return redirect(url_for("dashboard"))
+
+        if url_id in User.objects(user_name=form.user_name.data).first().shared_url_list:
+            flash(
+                f"Shortened URL information has already been shared with the {form.user_name.data}", "warning")
+            return redirect(url_for("dashboard"))
+
+        object_list.first().update(push__shared_url_list=url_id)
+        flash(
+            f"Shared shortened URL information with {form.user_name.data}", "success")
+
+    return redirect(url_for("dashboard"))
 
 
 # Rotue to access the login page
