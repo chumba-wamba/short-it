@@ -3,13 +3,17 @@
 {% block content %}
 <h1>Dashboard</h1>
 {% for url in url_list %}
-
 <div class="card my-4">
     <div class="card-body">
-        <h5 class="card-text px-3">Orginal URL: {{ url.original_url }} </h5>
-        <h5 class="card-text px-3">Shortened URL: {{ url.shortened_url }} </h5>
-        <h5 class="card-text px-3">Click Count: {{ url.counter }} </h5>
-        <h5 class="card-text px-3">Date Defined: {{ url.date_defined.strftime('%m/%d/%Y') }}</h5>
+        <h5 class="card-title my-0 mx-3">Orginal URL</h5>
+        <p class="card-text mt-0 mx-3 text-justify" style="color: #3f3f3f;">{{ url.original_url }}</p>
+        <h5 class="card-title my-0 mx-3">Shortened URL</h5>
+        <p class="card-text mt-0 mx-3 text-justify" style="color: #3f3f3f;">{{ url.shortened_url }}</p>
+        <h5 class="card-title my-0 mx-3">Click Count</h5>
+        <p class="card-text mt-0 mx-3 text-justify" style="color: #3f3f3f;">{{ url.counter }}</p>
+        <h5 class="card-title my-0 mx-3">Date Defined</h5>
+        <p class="card-text mt-0 mx-3 text-justify" style="color: #3f3f3f;">{{ url.date_defined.strftime('%m/%d/%Y') }}
+        </p>
 
         <form method="POST" action={{url_for('share', url_id=url.id)}}>
             {{ form.hidden_tag() }}

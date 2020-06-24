@@ -39,9 +39,11 @@
     </form>
 </div>
 <div class="border-top pt-3">
+    {% if not current_user.is_authenticated %}
     <small class="text-muted">
         Need statistics for your URL?<a class="ml-2" href="{{ url_for('register') }}">Register now</a> to access your
         personalised dashboard!
     </small>
+    {% endif %}
 </div>
 {% endblock content %}
