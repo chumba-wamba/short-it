@@ -3,7 +3,10 @@ from flask_bcrypt import Bcrypt
 from flask_mongoengine import MongoEngine
 from flask_login import LoginManager
 
-
+# NOTE: The order of import statements is very important
+# to resolve the issue of circular imports which
+# is a result of the way the flask app has been
+# structured as a package.
 app = Flask(__name__) # Initializing flask app
 app.config["MONGODB_SETTINGS"] = {
     'db': 'shortit',
