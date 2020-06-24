@@ -110,7 +110,14 @@ def dashboard():
         form = ShareForm()
         url_list = URL.objects(owner=current_user.id)
 
-    return render_template("dashboard.html", title="Dashboard", form=form, url_list=url_list)
+        shared_id_list = User.objects(
+            id=current_user.id).first().shared_url_list
+
+        shared_list = []
+        for url_id in shared_id_list:
+            shared_list.append(URL.objects(id=url_id).first())
+
+    return render_template("dashboard.html", title="Dashboard", form=form, url_list=url_list, shared_list=shared_list)
 
 
 @app.route("/share/<string:url_id>", methods=["GET", "POST"])
