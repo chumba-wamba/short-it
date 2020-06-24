@@ -53,5 +53,5 @@ class ShortenForm(FlaskForm):
 
 class ShareForm(FlaskForm):
     user_name = StringField("Username", validators=[
-                            DataRequired(), Length(min=6, max=20)])
+                            DataRequired()])
     share = SubmitField("Share")
