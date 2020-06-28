@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
 from short_it import app, db, bcrypt
 from short_it.models import URL, User
-from short_it.forms import LoginForm, RegistrationForm, ShortenForm, ShareForm
+from short_it.forms import LoginForm, RegistrationForm, ShortenForm, ShareForm, AccountForm
 from short_it.shortener import random_url_gen
 
 
@@ -106,16 +106,15 @@ def dashboard():
     # links belonging to the end user and display
     # these stats
 
-    if current_user.is_authenticated:
-        form = ShareForm()
-        url_list = URL.objects(owner=current_user.id)
+    form = ShareForm()
+    url_list = URL.objects(owner=current_user.id)
 
-        shared_id_list = User.objects(
-            id=current_user.id).first().shared_url_list
+    shared_id_list = User.objects(
+        id=current_user.id).first().shared_url_list
 
-        shared_list = []
-        for url_id in shared_id_list:
-            shared_list.append(URL.objects(id=url_id).first())
+    shared_list = []
+    for url_id in shared_id_list:
+        shared_list.append(URL.objects(id=url_id).first())
 
     return render_template("dashboard.html", title="Dashboard", form=form, url_list=url_list, shared_list=shared_list)
 
@@ -187,7 +186,10 @@ def register():
 
     if request.method == "POST" and form.validate_on_submit():
 
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
+        hashed_password = bcrypt.generate_password_hash(
+            form.password.data).decode('utf-8')
+        print(type(hashed_password))
+        print(hashed_password)
 
         new_user = User(
             first_name=form.first_name.data,
@@ -207,10 +209,31 @@ def register():
 
 # Route to access and update the account
 # details of the user
-@app.route("/account")
+@app.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
-    return render_template("account.html", title="Account")
+    form = AccountForm()
+    user = User.objects(id=current_user.id).first()
+
+    if request.method == "POST" and form.validate_on_submit():
+        changes = []
+        if form.first_name.data:
+            user.update(set__first_name=form.first_name.data)
+            changes.append("First Name")
+        if form.last_name.data:
+            user.update(set__last_name=form.last_name.data)
+            changes.append("Last Name")
+        if form.password.data and bcrypt.check_password_hash(user.password, form.password.data) and form.new_password.data == form.confirm_new_password.data:
+            hashed_password = bcrypt.generate_password_hash(
+                form.new_password.data).decode('utf-8')
+            user.update(password=hashed_password)
+            changes.append("Password")
+
+        change_message = "Updated: "+", ".join(changes)
+        flash(change_message, "info")
+        return redirect(url_for("account"))
+
+    return render_template("account.html", title="Account", form=form, user=user)
 
 # Rotue to logout the user and delete
 # the session

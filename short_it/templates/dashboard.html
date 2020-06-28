@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1>Dashboard</h1>
+
 {% for url in url_list %}
 <div class="card my-4">
     <div class="card-body">
@@ -12,7 +13,8 @@
         <h5 class="card-title my-0 mx-3">Click Count</h5>
         <p class="card-text mt-0 mx-3 text-justify" style="color: #3f3f3f;">{{ url.counter }}</p>
         <h5 class="card-title my-0 mx-3">Date Defined</h5>
-        <p class="card-text mt-0 mx-3 text-justify" style="color: #3f3f3f;">{{ url.date_defined.strftime('%m/%d/%Y') }}
+        <p class="card-text mt-0 mx-3 text-justify" style="color: #3f3f3f;">
+            {{ url.date_defined.strftime('%m/%d/%Y') }}
         </p>
 
         <form method="POST" action={{url_for('share', url_id=url.id)}}>
@@ -28,7 +30,7 @@
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.user_name(class="form-control form-control-lg") }}
+                    {{ form.user_name(class="form-control form-control") }}
                     {% endif %}
                 </div>
             </div>
@@ -41,6 +43,7 @@
     </div>
 </div>
 {% endfor %}
+
 
 {% if shared_list %}
 <h1>Shared URLs</h1>
