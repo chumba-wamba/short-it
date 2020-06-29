@@ -5,6 +5,12 @@ from wtforms.fields.html5 import URLField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, InputRequired, Optional
 
 
+# Stackoverflow code for optional validation;
+# This works in such a manner that when a field
+# passed as argument within RequiredIf is appended
+# to the validators list of some other field, than
+# the validaton is invoked when the argument field
+# is non-empty.
 class RequiredIf(InputRequired):
     field_flags = ('requiredif',)
 
@@ -23,6 +29,9 @@ class RequiredIf(InputRequired):
             Optional().__call__(form, field)
 
 
+# Class for the login form present within the
+# login route 
+# The fields are self explanatory
 class LoginForm(FlaskForm):
     user_name = StringField(label="Username", validators=[
                             DataRequired(), Length(min=6, max=20)])
@@ -31,6 +40,9 @@ class LoginForm(FlaskForm):
     login = SubmitField(label="Login")
 
 
+# Class for the registration form present within the
+# register route 
+# The fields are self explanatory
 class RegistrationForm(FlaskForm):
     first_name = StringField(label="First Name", validators=[
                              DataRequired(), Length(max=20)])
@@ -57,6 +69,9 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("The email is already taken.")
 
 
+# Class for the shorten form present within the
+# shorten route 
+# The fields are self explanatory
 class ShortenForm(FlaskForm):
     original_url = URLField(label="Original URL", validators=[DataRequired()])
     shortened_url = StringField(label="Keyword")
@@ -69,12 +84,22 @@ class ShortenForm(FlaskForm):
                 raise ValidationError("The shortened url is already taken.")
 
 
+# Class for the share form present within the
+# share route 
+# The fields are self explanatory
+# This form is used by the owners of shortened URLS
+# to share the dashboard of to other users
 class ShareForm(FlaskForm):
     user_name = StringField("Username", validators=[
                             DataRequired()])
     share = SubmitField("Share")
 
 
+# Class for the account form present within the
+# account route 
+# The fields are self explanatory
+# Helps in updating account information such as 
+# first name, last name, and password
 class AccountForm(FlaskForm):
     first_name = StringField(label="First Name", validators=[Length(max=20)])
     last_name = StringField(label="Last Name", validators=[Length(max=20)])
