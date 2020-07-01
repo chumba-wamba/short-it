@@ -13,6 +13,15 @@ To do:
 * Design and code the front-end (probably requires AJAX). ✔
 * Add logic to integrate dashboard for registered users. ✔
 
+## Features
+
+* Responsive UI.
+* Shorten URLs to custom or automatically generated strings.
+* View analytics for your shortened URL (only for registered users).
+* Shorten URLs without registering as a user.
+* Share the details of a shortened URL with other users. 
+* Edit basic account details and your password.
+
 ## Installation
 
 Follow the steps to run the web-app on your local machine:
